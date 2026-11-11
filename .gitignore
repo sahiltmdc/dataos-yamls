@@ -2,3 +2,4 @@
 secrets/*
 !secrets/*.example.yaml
 !secrets/*.example.txt
+secrets/oidc-secrets.txt
