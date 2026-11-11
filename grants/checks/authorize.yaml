@@ -1,0 +1,9 @@
+# Request for `ds user authorize -f`: a read-only permission check, not a resource to apply.
+# Interpolates environment variables like `ds rs apply` does, so export DATAOS_TENANT first
+# (tenant id from `ds health`). Use cases whose atoms are pinned to `system` (such as
+# use-mcp-service) give the same answer for any collection.
+collection: "${DATAOS_TENANT}"
+policy_use_case_id: use-mcp-service
+values:
+  mcp-tool-read:
+    - user: sahilsasanetmdcio

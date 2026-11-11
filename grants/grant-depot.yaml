@@ -1,0 +1,35 @@
+# use-any-depots mixes tenant-scoped atoms (read-resource / read-log on depot)
+# with atoms pinned to the system collection in the PEP (read-specific-secret-governance,
+# get-path-ingress, get-path-collated), so the same use case is granted in both collections.
+name: grant-use-any-depots
+version: v2alpha
+type: grant
+tags:
+  - governance
+owner: "${GRANTEE_ID}"
+tenant: "${DATAOS_TENANT}"
+spec:
+  policy_use_case_id: use-any-depots
+  subjects:
+    - users:id:${GRANTEE_ID}
+  approve: true
+  requester: "${GRANTEE_ID}"
+  collection: "${DATAOS_TENANT}"
+  manageAsUser: "${GRANTEE_ID}"
+
+---
+name: grant-use-any-depots-system
+version: v2alpha
+type: grant
+tags:
+  - governance
+owner: "${GRANTEE_ID}"
+tenant: "${DATAOS_TENANT}"
+spec:
+  policy_use_case_id: use-any-depots
+  subjects:
+    - users:id:${GRANTEE_ID}
+  approve: true
+  requester: "${GRANTEE_ID}"
+  collection: system
+  manageAsUser: "${GRANTEE_ID}"

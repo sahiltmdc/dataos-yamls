@@ -1,0 +1,38 @@
+name: grant-use-any-compute
+version: v2alpha
+type: grant
+tags:
+  - governance
+owner: "${GRANTEE_ID}"
+tenant: "${DATAOS_TENANT}"
+spec:
+  policy_use_case_id: use-any-compute
+  subjects:
+    - users:id:${GRANTEE_ID}
+  values:
+    use-compute-specific-tenant-dataos-resource:
+      - name: "*"
+    read-resource-tenant-dataos-resource:
+      - type: compute
+  approve: true
+  requester: "${GRANTEE_ID}"
+  collection: "${DATAOS_TENANT}"
+  manageAsUser: "${GRANTEE_ID}"
+
+---
+name: grant-use-any-secret
+version: v2alpha
+type: grant
+tags:
+  - governance
+owner: "${GRANTEE_ID}"
+tenant: "${DATAOS_TENANT}"
+spec:
+  policy_use_case_id: use-any-secret
+  subjects:
+    - users:id:${GRANTEE_ID}
+  approve: true
+  requester: "${GRANTEE_ID}"
+  # secret atoms (read-specific-secret-governance) are pinned to the system collection in the PEP
+  collection: system
+  manageAsUser: "${GRANTEE_ID}"

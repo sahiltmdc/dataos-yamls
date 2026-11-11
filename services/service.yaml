@@ -1,0 +1,75 @@
+name: mcp-broker
+version: v2alpha
+type: service
+tags:
+  - service
+  - python-stack
+service:
+  servicePorts:
+    - name: http
+      port: 32010
+  replicas: 1
+  http:
+    enabled: true
+    ingress:
+      enabled: true
+      path: /mcp/api/v1
+      stripPath: false
+    path: /mcp/api/v1
+    stripPath: false
+    port: 32010
+    noNetworkAuthorization: true
+  logLevel: INFO
+  compute: mcp-compute
+  resources:
+    requests:
+      cpu: 512m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+  stack: container
+  use:
+    projection:
+      secrets:
+        - id: mcp:broker-secrets
+          contextAlias: bsc
+      projections:
+        envVars:
+          - key: INSTANCE_URL
+            template: "https://{{ defaultProjections.dataOsFqdn }}"
+          - key: OAUTH_ISSUER_URL
+            template: "https://{{ defaultProjections.dataOsFqdn }}/mcp/api/v1/oauth"
+          - key: MCP_RESOURCE_URL
+            template: "https://{{ defaultProjections.dataOsFqdn }}/mcp/api/v1"
+          - key: UPSTREAM_REDIRECT_URI
+            template: "https://{{ defaultProjections.dataOsFqdn }}/mcp/api/v1/oauth/callback"
+          - key: LOG_FILE_PATH
+            template: "/tmp/logs/mcp-oauth-broker.log"
+          - key: UPSTREAM_CLIENT_ID
+            template: "{{ secrets['bsc'].UPSTREAM_CLIENT_ID | base64_decode }}"
+          - key: UPSTREAM_CLIENT_SECRET
+            template: "{{ secrets['bsc'].UPSTREAM_CLIENT_SECRET | base64_decode }}"
+          - key: FORWARD_AUTH_SHARED_SECRET
+            template: "{{ secrets['bsc'].FORWARD_AUTH_SHARED_SECRET | base64_decode }}"
+          - key: JWT_PRIVATE_KEY_B64
+            template: "{{ secrets['bsc'].JWT_PRIVATE_KEY_B64 | base64_decode }}"
+          - key: MCP_UPSTREAM_URL
+            template: "https://{{ defaultProjections.dataOsFqdn }}/dataproduct-mcp/api/v1"
+          - key: DATABASE_URL
+            template: "{{ secrets['bsc'].DATABASE_URL | base64_decode }}"
+  envs:
+    UPSTREAM_SCOPES: "openid profile groups email federated:id offline_access"
+    UPSTREAM_TOKEN_ENDPOINT_AUTH_METHOD: "client_secret_basic"
+    STATE_LIFETIME: "600"
+    AUTHORIZATION_CODE_LIFETIME: "60"
+    ACCESS_TOKEN_LIFETIME: "1800"
+    REFRESH_TOKEN_LIFETIME: "604800"
+    CLIENT_LIFETIME: "0"
+    UPSTREAM_REFRESH_SKEW: "60"
+  stackSpec:
+    image: tmdcio/mcp-broker:0.0.1-dev04
+    command:
+      - python
+      - -m
+      - mcp_oauth_broker.cli

@@ -1,0 +1,87 @@
+version: v1alpha
+type: vulcan
+name: sahl-demo-v2
+tags:
+  - snowflake-analytics
+  - pricing-usecase
+description: |
+  Data product designed to analyze pricing effectiveness, contract performance, and sales revenue trends using Snowflake-based analytics models.
+
+tenant: ${DATAOS_TENANT}
+owner: sahilsasanetmdcio
+spec:
+  runAsUser: sahilsasanetmdcio
+  compute: engineering-compute
+  engine: snowflake
+  repo:
+    url: https://bitbucket.org/rubik_/vulcan-examples
+    syncFlags:
+      - "--ref=ai-examples"
+      - "--submodules=off"
+    baseDir: vulcan-examples/sahil-examples/pricing
+    secretId: engineering:git-sync-sahil
+  depots:
+    - dataos://sfdataproductsnaaprod?purpose=rw
+  # use:
+  #   projection:
+  #     secrets:
+  #       - id: engineering:sf-secret
+  #         contextAlias: sfc
+  #     projections:
+  #       envVars:
+  #         - key: SNOWFLAKE_USER
+  #           template: "{{ secrets['sfc'].USERNAME | base64_decode }}"
+  #         - key: SNOWFLAKE_PASSWORD
+  #           template: "{{ secrets['sfc'].PASSWORD | base64_decode }}"
+  #         - key: SNOWFLAKE_ACCOUNT
+  #           template: "{{ secrets['sfc'].SNOWFLAKE_ACCOUNT | base64_decode }}"
+  #         - key: SNOWFLAKE_ROLE
+  #           template: "{{ secrets['sfc'].SNOWFLAKE_ROLE | base64_decode }}"
+  #         - key: SNOWFLAKE_WAREHOUSE
+  #           template: "{{ secrets['sfc'].SNOWFLAKE_WAREHOUSE | base64_decode }}"
+  #         - key: SNOWFLAKE_DATABASE
+  #           template: "{{ secrets['sfc'].SNOWFLAKE_DATABASE | base64_decode }}"
+  workflow:
+    type: schedule
+    schedule:
+      crons:
+        - "*/45 * * * *"
+      endOn: "2027-01-01T00:00:00-00:00"
+      timezone: "US/Pacific"
+      concurrencyPolicy: Forbid
+    logLevel: INFO
+    resource:
+      request:
+        cpu: "500m"
+        memory: "512Mi"
+      limit:
+        cpu: "1000m"
+        memory: "1Gi"
+    migrate:
+      command:
+        - vulcan
+      arguments:
+        - migrate
+    plan:
+      command:
+        - vulcan
+      arguments:
+        - --log-to-stdout
+        - plan
+        - --auto-apply
+    run:
+      command:
+        - vulcan
+      arguments:
+        - --log-to-stdout
+        - run
+  api:
+    replicas: 3
+    logLevel: INFO
+    resource:
+      request:
+        cpu: "500m"
+        memory: "512Mi"
+      limit:
+        cpu: "2000m"
+        memory: "2Gi"

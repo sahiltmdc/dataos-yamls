@@ -1,0 +1,26 @@
+name: sfprod
+version: v2alpha
+type: depot
+tags:
+  - snowflake
+  - pricing
+  - source
+tenant: ${DATAOS_TENANT}
+owner: sahilsasanetmdcio
+layer: user
+description: Snowflake depot targeting SFDATAPRODUCTSNAAPROD for Vulcan model output
+spec:
+  type: snowflake
+  description: Snowflake depot targeting SFDATAPRODUCTSNAAPROD for Vulcan model output
+  spec:
+    account: "EQZOTUQ-JCA67320"
+    database: "SFDATAPRODUCTSNAAPROD"
+    url: "EQZOTUQ-JCA67320.snowflakecomputing.com"
+    warehouse: "SNOWFLAKE_LEARNING_WH"
+  secrets:
+    - id: "engineering:sf-sahil"
+      purpose: query
+    - id: "engineering:sf-sahil"
+      purpose: rw
+    - id: "engineering:sf-sahil"
+      purpose: scan

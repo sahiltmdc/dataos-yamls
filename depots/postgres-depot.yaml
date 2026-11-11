@@ -1,0 +1,22 @@
+name: somedepot
+version: v2alpha
+type: depot
+tags:
+owner: sahilsasanetmdcio
+tenant: "${DATAOS_TENANT}"
+spec:
+  type: postgresql
+  description: To write data to postgresql database
+  name: somedepot
+  spec:
+    database: ai
+    host: qa-noncdc.postgres.database.azure.com
+    port: 5432
+    subprotocol: postgresql
+  secrets:
+    - id: engineering:ai-postgres
+      purpose: scan
+    - id: engineering:ai-postgres
+      purpose: query
+    - id: engineering:ai-postgres
+      purpose: rw

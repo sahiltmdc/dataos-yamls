@@ -1,0 +1,20 @@
+name: grant-use-specific-compute-qa
+version: v2alpha
+type: grant
+tags:
+  - governance
+owner: "${GRANTEE_ID}"
+tenant: "${DATAOS_TENANT}"
+spec:
+  policy_use_case_id: use-specific-compute
+  subjects:
+    - users:id:${GRANTEE_ID}
+  values:
+    use-compute-specific-tenant-dataos-resource:
+      - name: "qa-compute"
+    read-resource-tenant-dataos-resource:
+      - type: compute
+  approve: false
+  requester: "${GRANTEE_ID}"
+  collection: system
+  manageAsUser: "${GRANTEE_ID}"

@@ -1,0 +1,4 @@
+# Real secrets never go in git. Only the *.example.* templates in secrets/ are tracked.
+secrets/*
+!secrets/*.example.yaml
+!secrets/*.example.txt
